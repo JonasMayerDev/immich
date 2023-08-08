@@ -641,14 +641,7 @@ describe(AssetService.name, () => {
       await sut.deleteAll(authStub.user1, { ids: ['asset1', 'asset2'], force: false });
 
       expect(assetMock.softDeleteAll).toHaveBeenCalledWith(['asset1', 'asset2']);
-      expect(jobMock.queue.mock.calls).toEqual([
-        [
-          {
-            name: JobName.SEARCH_REMOVE_ASSET,
-            data: { ids: ['asset1', 'asset2'] },
-          },
-        ],
-      ]);
+      expect(jobMock.queue.mock.calls).toEqual([]);
     });
   });
 
@@ -668,14 +661,7 @@ describe(AssetService.name, () => {
       await sut.restoreAll(authStub.user1, { ids: ['asset1', 'asset2'] });
 
       expect(assetMock.restoreAll).toHaveBeenCalledWith(['asset1', 'asset2']);
-      expect(jobMock.queue.mock.calls).toEqual([
-        [
-          {
-            name: JobName.SEARCH_INDEX_ASSET,
-            data: { ids: ['asset1', 'asset2'] },
-          },
-        ],
-      ]);
+      expect(jobMock.queue.mock.calls).toEqual([]);
     });
   });
 
@@ -703,19 +689,6 @@ describe(AssetService.name, () => {
       expect(jobMock.queue.mock.calls).toEqual([
         [
           {
-            name: JobName.SEARCH_REMOVE_FACE,
-            data: { assetId: faceStub.face1.assetId, personId: faceStub.face1.personId },
-          },
-        ],
-        [
-          {
-            name: JobName.SEARCH_REMOVE_FACE,
-            data: { assetId: faceStub.mergeFace1.assetId, personId: faceStub.mergeFace1.personId },
-          },
-        ],
-        [{ name: JobName.SEARCH_REMOVE_ASSET, data: { ids: [assetWithFace.id] } }],
-        [
-          {
             name: JobName.DELETE_FILES,
             data: {
               files: [
@@ -740,9 +713,7 @@ describe(AssetService.name, () => {
 
       await sut.handleAssetDeletion({ id: assetStub.readOnly.id });
 
-      expect(jobMock.queue.mock.calls).toEqual([
-        [{ name: JobName.SEARCH_REMOVE_ASSET, data: { ids: [assetStub.readOnly.id] } }],
-      ]);
+      expect(jobMock.queue.mock.calls).toEqual([]);
 
       expect(assetMock.remove).toHaveBeenCalledWith(assetStub.readOnly);
     });
@@ -767,7 +738,6 @@ describe(AssetService.name, () => {
 
       expect(assetMock.remove).toHaveBeenCalledWith(assetStub.external);
       expect(jobMock.queue.mock.calls).toEqual([
-        [{ name: JobName.SEARCH_REMOVE_ASSET, data: { ids: [assetStub.external.id] } }],
         [
           {
             name: JobName.DELETE_FILES,
@@ -788,9 +758,7 @@ describe(AssetService.name, () => {
       await sut.handleAssetDeletion({ id: assetStub.livePhotoStillAsset.id });
 
       expect(jobMock.queue.mock.calls).toEqual([
-        [{ name: JobName.SEARCH_REMOVE_ASSET, data: { ids: [assetStub.livePhotoStillAsset.id] } }],
         [{ name: JobName.ASSET_DELETION, data: { id: assetStub.livePhotoMotionAsset.id } }],
-        [{ name: JobName.SEARCH_REMOVE_ASSET, data: { ids: [assetStub.livePhotoMotionAsset.id] } }],
         [
           {
             name: JobName.DELETE_FILES,
