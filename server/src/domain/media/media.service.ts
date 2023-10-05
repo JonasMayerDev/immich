@@ -1,10 +1,9 @@
 import { AssetEntity, AssetType, Colorspace, TranscodeHWAccel, TranscodePolicy, VideoCodec } from '@app/infra/entities';
-import { PathType } from '@app/infra/entities/file-history.entity';
 import { Inject, Injectable, Logger, UnsupportedMediaTypeException } from '@nestjs/common';
 import { IAssetRepository, WithoutProperty } from '../asset';
 import { usePagination } from '../domain.util';
-import { IFileHistoryRepository } from '../file-history';
 import { IBaseJob, IEntityJob, IJobRepository, JOBS_ASSET_PAGINATION_SIZE, JobName, QueueName } from '../job';
+import { IMoveRepository, PathType } from '../move';
 import { IPersonRepository } from '../person';
 import { IStorageRepository, StorageCore, StorageFolder } from '../storage';
 import { ISystemConfigRepository, SystemConfigFFmpegDto } from '../system-config';
@@ -25,10 +24,10 @@ export class MediaService {
     @Inject(IMediaRepository) private mediaRepository: IMediaRepository,
     @Inject(IStorageRepository) private storageRepository: IStorageRepository,
     @Inject(ISystemConfigRepository) configRepository: ISystemConfigRepository,
-    @Inject(IFileHistoryRepository) fileHistoryRepository: IFileHistoryRepository,
+    @Inject(IMoveRepository) moveRepository: IMoveRepository,
   ) {
     this.configCore = new SystemConfigCore(configRepository);
-    this.storageCore = new StorageCore(this.storageRepository, assetRepository, fileHistoryRepository);
+    this.storageCore = new StorageCore(this.storageRepository, assetRepository, moveRepository, personRepository);
   }
 
   async handleQueueGenerateThumbnails({ force }: IBaseJob) {
@@ -105,21 +104,21 @@ export class MediaService {
     if (asset.resizePath) {
       const resizePath = this.ensureThumbnailPath(asset, 'jpeg');
       if (asset.resizePath !== resizePath) {
-        await this.storageCore.moveAssetFile(asset, PathType.JPEG_THUMBNAIL, resizePath);
+        await this.storageCore.moveFile(asset.id, PathType.JPEG_THUMBNAIL, asset.resizePath, resizePath);
       }
     }
 
     if (asset.webpPath) {
       const webpPath = this.ensureThumbnailPath(asset, 'webp');
       if (asset.webpPath !== webpPath) {
-        await this.storageCore.moveAssetFile(asset, PathType.WEBP_THUMBNAIL, webpPath);
+        await this.storageCore.moveFile(asset.id, PathType.WEBP_THUMBNAIL, asset.webpPath, webpPath);
       }
     }
 
     if (asset.encodedVideoPath) {
       const encodedVideoPath = this.ensureEncodedVideoPath(asset, 'mp4');
       if (asset.encodedVideoPath !== encodedVideoPath) {
-        await this.storageCore.moveAssetFile(asset, PathType.ENCODED_VIDEO, encodedVideoPath);
+        await this.storageCore.moveFile(asset.id, PathType.ENCODED_VIDEO, asset.encodedVideoPath, encodedVideoPath);
       }
     }
 

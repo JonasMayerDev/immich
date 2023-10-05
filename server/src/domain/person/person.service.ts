@@ -12,9 +12,9 @@ import {
 import { AuthUserDto } from '../auth';
 import { mimeTypes } from '../domain.constant';
 import { usePagination } from '../domain.util';
-import { IFileHistoryRepository } from '../file-history';
 import { IBaseJob, IEntityJob, IJobRepository, JOBS_ASSET_PAGINATION_SIZE, JobName } from '../job';
 import { CropOptions, FACE_THUMBNAIL_SIZE, IMediaRepository } from '../media';
+import { IMoveRepository, PathType } from '../move';
 import { ISearchRepository } from '../search';
 import { IMachineLearningRepository } from '../smart-info';
 import { IStorageRepository, ImmichReadStream, StorageCore, StorageFolder } from '../storage';
@@ -40,7 +40,7 @@ export class PersonService {
   constructor(
     @Inject(IAccessRepository) accessRepository: IAccessRepository,
     @Inject(IAssetRepository) private assetRepository: IAssetRepository,
-    @Inject(IFileHistoryRepository) private fileHistoryRepository: IFileHistoryRepository,
+    @Inject(IMoveRepository) private moveRepository: IMoveRepository,
     @Inject(IMachineLearningRepository) private machineLearningRepository: IMachineLearningRepository,
     @Inject(IMediaRepository) private mediaRepository: IMediaRepository,
     @Inject(IPersonRepository) private repository: IPersonRepository,
@@ -50,7 +50,7 @@ export class PersonService {
     @Inject(IJobRepository) private jobRepository: IJobRepository,
   ) {
     this.access = new AccessCore(accessRepository);
-    this.storageCore = new StorageCore(storageRepository, assetRepository, fileHistoryRepository);
+    this.storageCore = new StorageCore(storageRepository, assetRepository, moveRepository, repository);
     this.configCore = new SystemConfigCore(configRepository);
   }
 
@@ -266,8 +266,7 @@ export class PersonService {
 
     const path = this.storageCore.ensurePath(StorageFolder.THUMBNAILS, person.ownerId, `${id}.jpeg`);
     if (person.thumbnailPath && person.thumbnailPath !== path) {
-      await this.storageRepository.moveFile(person.thumbnailPath, path);
-      await this.repository.update({ id, thumbnailPath: path });
+      await this.storageCore.moveFile(id, PathType.FACE, person.thumbnailPath, path);
     }
 
     return true;

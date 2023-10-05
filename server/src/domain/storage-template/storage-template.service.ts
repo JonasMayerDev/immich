@@ -1,5 +1,4 @@
 import { AssetEntity, AssetType, SystemConfig } from '@app/infra/entities';
-import { PathType } from '@app/infra/entities/file-history.entity';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import handlebar from 'handlebars';
 import * as luxon from 'luxon';
@@ -8,6 +7,8 @@ import sanitize from 'sanitize-filename';
 import { IAssetRepository } from '../asset/asset.repository';
 import { getLivePhotoMotionFilename, usePagination } from '../domain.util';
 import { IEntityJob, JOBS_ASSET_PAGINATION_SIZE } from '../job';
+import { IMoveRepository, PathType } from '../move';
+import { IPersonRepository } from '../person';
 import { IStorageRepository, StorageCore, StorageFolder } from '../storage';
 import {
   INITIAL_SYSTEM_CONFIG,
@@ -39,6 +40,8 @@ export class StorageTemplateService {
     @Inject(IAssetRepository) private assetRepository: IAssetRepository,
     @Inject(ISystemConfigRepository) configRepository: ISystemConfigRepository,
     @Inject(INITIAL_SYSTEM_CONFIG) config: SystemConfig,
+    @Inject(IMoveRepository) moveRepository: IMoveRepository,
+    @Inject(IPersonRepository) personRepository: IPersonRepository,
     @Inject(IStorageRepository) private storageRepository: IStorageRepository,
     @Inject(IUserRepository) private userRepository: IUserRepository,
   ) {
@@ -46,7 +49,7 @@ export class StorageTemplateService {
     this.configCore = new SystemConfigCore(configRepository);
     this.configCore.addValidator((config) => this.validate(config));
     this.configCore.config$.subscribe((config) => this.onConfig(config));
-    this.storageCore = new StorageCore(storageRepository);
+    this.storageCore = new StorageCore(storageRepository, assetRepository, moveRepository, personRepository);
   }
 
   async handleMigrationSingle({ id }: IEntityJob) {
@@ -105,13 +108,13 @@ export class StorageTemplateService {
 
       let sidecarMoved = false;
       try {
-        await this.storageCore.moveAssetFile(asset, PathType.ORIGINAL, destination);
+        await this.storageCore.moveFile(asset.id, PathType.ORIGINAL, asset.originalPath, destination);
 
         let sidecarDestination;
         try {
           if (asset.sidecarPath) {
             sidecarDestination = `${destination}.xmp`;
-            await this.storageCore.moveAssetFile(asset, PathType.SIDECAR, sidecarDestination);
+            await this.storageCore.moveFile(asset.id, PathType.SIDECAR, asset.sidecarPath, sidecarDestination);
             sidecarMoved = true;
           }
 

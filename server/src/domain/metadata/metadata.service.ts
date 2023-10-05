@@ -9,6 +9,8 @@ import { IAssetRepository, WithProperty, WithoutProperty } from '../asset';
 import { ICryptoRepository } from '../crypto';
 import { usePagination } from '../domain.util';
 import { IBaseJob, IEntityJob, IJobRepository, JOBS_ASSET_PAGINATION_SIZE, JobName, QueueName } from '../job';
+import { IMoveRepository } from '../move';
+import { IPersonRepository } from '../person';
 import { IStorageRepository, StorageCore, StorageFolder } from '../storage';
 import { FeatureFlag, ISystemConfigRepository, SystemConfigCore } from '../system-config';
 import { IMetadataRepository, ImmichTags } from './metadata.repository';
@@ -65,8 +67,10 @@ export class MetadataService {
     @Inject(IMetadataRepository) private repository: IMetadataRepository,
     @Inject(IStorageRepository) private storageRepository: IStorageRepository,
     @Inject(ISystemConfigRepository) configRepository: ISystemConfigRepository,
+    @Inject(IMoveRepository) moveRepository: IMoveRepository,
+    @Inject(IPersonRepository) personRepository: IPersonRepository,
   ) {
-    this.storageCore = new StorageCore(storageRepository);
+    this.storageCore = new StorageCore(storageRepository, assetRepository, moveRepository, personRepository);
     this.configCore = new SystemConfigCore(configRepository);
     this.configCore.config$.subscribe(() => this.init());
   }

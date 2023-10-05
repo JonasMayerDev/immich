@@ -1,9 +1,8 @@
-import { AssetEntity } from '@app/infra/entities';
-import { PathType } from '@app/infra/entities/file-history.entity';
 import { join } from 'node:path';
-import { IAssetRepository } from '..';
+import { IAssetRepository } from '../asset';
 import { APP_MEDIA_LOCATION } from '../domain.constant';
-import { IFileHistoryRepository } from '../file-history';
+import { IMoveRepository, PathType } from '../move';
+import { IPersonRepository } from '../person';
 import { IStorageRepository } from './storage.repository';
 
 export enum StorageFolder {
@@ -18,7 +17,8 @@ export class StorageCore {
   constructor(
     private repository: IStorageRepository,
     private assetRepository: IAssetRepository,
-    private fileHistoryRepository: IFileHistoryRepository,
+    private moveRepository: IMoveRepository,
+    private personRepository: IPersonRepository,
   ) {}
 
   getFolderLocation(
@@ -50,29 +50,31 @@ export class StorageCore {
     return join(folderPath, fileName);
   }
 
-  async moveAssetFile(asset: AssetEntity, pathType: PathType, newPath: string) {
-    const move = await this.fileHistoryRepository.initializeMove(asset, pathType);
+  async moveFile(id: string, pathType: PathType, originalPath: string, newPath: string) {
+    const move = await this.moveRepository.create(id, pathType, originalPath, newPath);
+    await this.repository.moveFile(originalPath, newPath);
 
-    // the according path must exist because otherwise initializeMove(...) would throw an error
     switch (pathType) {
       case PathType.ORIGINAL:
-        await this.repository.moveFile(asset.originalPath, newPath);
-        await this.assetRepository.save({ id: asset.id, originalPath: newPath });
+        await this.assetRepository.save({ id, originalPath: newPath });
+        break;
       case PathType.JPEG_THUMBNAIL:
-        await this.repository.moveFile(asset.resizePath!, newPath);
-        await this.assetRepository.save({ id: asset.id, resizePath: newPath });
+        await this.assetRepository.save({ id, resizePath: newPath });
+        break;
       case PathType.WEBP_THUMBNAIL:
-        await this.repository.moveFile(asset.webpPath!, newPath);
-        await this.assetRepository.save({ id: asset.id, webpPath: newPath });
+        await this.assetRepository.save({ id, webpPath: newPath });
+        break;
       case PathType.ENCODED_VIDEO:
-        await this.repository.moveFile(asset.encodedVideoPath!, newPath);
-        await this.assetRepository.save({ id: asset.id, encodedVideoPath: newPath });
+        await this.assetRepository.save({ id, encodedVideoPath: newPath });
+        break;
       case PathType.SIDECAR:
-        await this.repository.moveFile(asset.sidecarPath!, newPath);
-        await this.assetRepository.save({ id: asset.id, sidecarPath: newPath });
+        await this.assetRepository.save({ id, sidecarPath: newPath });
+        break;
+      case PathType.FACE:
+        await this.personRepository.update({ id, thumbnailPath: newPath });
     }
 
-    await this.fileHistoryRepository.finishMove(move, newPath);
+    await this.moveRepository.softDelete(move.id);
   }
 
   removeEmptyDirs(folder: StorageFolder) {

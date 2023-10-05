@@ -1,5 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { IAssetRepository } from '../asset';
 import { IDeleteFilesJob } from '../job';
+import { IMoveRepository } from '../move';
+import { IPersonRepository } from '../person';
 import { StorageCore, StorageFolder } from './storage.core';
 import { IStorageRepository } from './storage.repository';
 
@@ -8,8 +11,13 @@ export class StorageService {
   private logger = new Logger(StorageService.name);
   private storageCore: StorageCore;
 
-  constructor(@Inject(IStorageRepository) private storageRepository: IStorageRepository) {
-    this.storageCore = new StorageCore(storageRepository);
+  constructor(
+    @Inject(IAssetRepository) assetRepository: IAssetRepository,
+    @Inject(IMoveRepository) moveRepository: IMoveRepository,
+    @Inject(IPersonRepository) personRepository: IPersonRepository,
+    @Inject(IStorageRepository) private storageRepository: IStorageRepository,
+  ) {
+    this.storageCore = new StorageCore(storageRepository, assetRepository, moveRepository, personRepository);
   }
 
   init() {
