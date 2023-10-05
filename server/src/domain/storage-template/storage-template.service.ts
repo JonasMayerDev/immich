@@ -1,4 +1,5 @@
 import { AssetEntity, AssetType, SystemConfig } from '@app/infra/entities';
+import { PathType } from '@app/infra/entities/file-history.entity';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import handlebar from 'handlebars';
 import * as luxon from 'luxon';
@@ -104,17 +105,16 @@ export class StorageTemplateService {
 
       let sidecarMoved = false;
       try {
-        await this.storageRepository.moveFile(asset.originalPath, destination);
+        await this.storageCore.moveAssetFile(asset, PathType.ORIGINAL, destination);
 
         let sidecarDestination;
         try {
           if (asset.sidecarPath) {
             sidecarDestination = `${destination}.xmp`;
-            await this.storageRepository.moveFile(asset.sidecarPath, sidecarDestination);
+            await this.storageCore.moveAssetFile(asset, PathType.SIDECAR, sidecarDestination);
             sidecarMoved = true;
           }
 
-          await this.assetRepository.save({ id: asset.id, originalPath: destination, sidecarPath: sidecarDestination });
           asset.originalPath = destination;
           asset.sidecarPath = sidecarDestination || null;
         } catch (error: any) {
@@ -122,6 +122,8 @@ export class StorageTemplateService {
             `Unable to save new originalPath to database, undoing move for path ${asset.originalPath} - filename ${asset.originalFileName} - id ${asset.id}`,
             error?.stack,
           );
+
+          // TODO: Is this needed? And if yes, is it fine to call storageCore.moveAssetFile again?
 
           // Either sidecar move failed or the save failed. Either way, move media back
           await this.storageRepository.moveFile(destination, source);

@@ -12,6 +12,7 @@ import {
 import { AuthUserDto } from '../auth';
 import { mimeTypes } from '../domain.constant';
 import { usePagination } from '../domain.util';
+import { IFileHistoryRepository } from '../file-history';
 import { IBaseJob, IEntityJob, IJobRepository, JOBS_ASSET_PAGINATION_SIZE, JobName } from '../job';
 import { CropOptions, FACE_THUMBNAIL_SIZE, IMediaRepository } from '../media';
 import { ISearchRepository } from '../search';
@@ -39,6 +40,7 @@ export class PersonService {
   constructor(
     @Inject(IAccessRepository) accessRepository: IAccessRepository,
     @Inject(IAssetRepository) private assetRepository: IAssetRepository,
+    @Inject(IFileHistoryRepository) private fileHistoryRepository: IFileHistoryRepository,
     @Inject(IMachineLearningRepository) private machineLearningRepository: IMachineLearningRepository,
     @Inject(IMediaRepository) private mediaRepository: IMediaRepository,
     @Inject(IPersonRepository) private repository: IPersonRepository,
@@ -48,7 +50,7 @@ export class PersonService {
     @Inject(IJobRepository) private jobRepository: IJobRepository,
   ) {
     this.access = new AccessCore(accessRepository);
-    this.storageCore = new StorageCore(storageRepository);
+    this.storageCore = new StorageCore(storageRepository, assetRepository, fileHistoryRepository);
     this.configCore = new SystemConfigCore(configRepository);
   }
 
