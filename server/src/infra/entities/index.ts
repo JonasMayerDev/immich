@@ -5,6 +5,7 @@ import { AssetEntity } from './asset.entity';
 import { AuditEntity } from './audit.entity';
 import { ExifEntity } from './exif.entity';
 import { LibraryEntity } from './library.entity';
+import { MoveEntity } from './move.entity';
 import { PartnerEntity } from './partner.entity';
 import { PersonEntity } from './person.entity';
 import { SharedLinkEntity } from './shared-link.entity';
@@ -37,6 +38,7 @@ export const databaseEntities = [
   AssetFaceEntity,
   AuditEntity,
   ExifEntity,
+  MoveEntity,
   PartnerEntity,
   PersonEntity,
   SharedLinkEntity,
