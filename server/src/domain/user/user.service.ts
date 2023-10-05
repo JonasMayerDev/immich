@@ -8,7 +8,7 @@ import { AuthUserDto } from '../auth';
 import { ICryptoRepository } from '../crypto/crypto.repository';
 import { IEntityJob, IJobRepository, JobName } from '../job';
 import { ILibraryRepository } from '../library/library.repository';
-import { IMoveRepository } from '../move';
+import { IMoveRepository } from '../move/move.repository';
 import { IPersonRepository } from '../person';
 import { StorageCore, StorageFolder } from '../storage';
 import { IStorageRepository } from '../storage/storage.repository';

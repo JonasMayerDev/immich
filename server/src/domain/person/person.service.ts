@@ -1,4 +1,5 @@
 import { PersonEntity } from '@app/infra/entities';
+import { PathType } from '@app/infra/entities/move.entity';
 import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { AccessCore, IAccessRepository, Permission } from '../access';
 import {
@@ -14,7 +15,7 @@ import { mimeTypes } from '../domain.constant';
 import { usePagination } from '../domain.util';
 import { IBaseJob, IEntityJob, IJobRepository, JOBS_ASSET_PAGINATION_SIZE, JobName } from '../job';
 import { CropOptions, FACE_THUMBNAIL_SIZE, IMediaRepository } from '../media';
-import { IMoveRepository, PathType } from '../move';
+import { IMoveRepository } from '../move/move.repository';
 import { ISearchRepository } from '../search';
 import { IMachineLearningRepository } from '../smart-info';
 import { IStorageRepository, ImmichReadStream, StorageCore, StorageFolder } from '../storage';

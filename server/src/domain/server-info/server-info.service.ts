@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IAssetRepository } from '../asset';
 import { mimeTypes, serverVersion } from '../domain.constant';
 import { asHumanReadable } from '../domain.util';
-import { IMoveRepository } from '../move';
+import { IMoveRepository } from '../move/move.repository';
 import { IPersonRepository } from '../person';
 import { IStorageRepository, StorageCore, StorageFolder } from '../storage';
 import { ISystemConfigRepository, SystemConfigCore } from '../system-config';

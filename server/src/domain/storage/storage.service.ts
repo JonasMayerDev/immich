@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { IAssetRepository } from '../asset';
 import { IDeleteFilesJob } from '../job';
-import { IMoveRepository } from '../move';
+import { IMoveRepository } from '../move/move.repository';
 import { IPersonRepository } from '../person';
 import { StorageCore, StorageFolder } from './storage.core';
 import { IStorageRepository } from './storage.repository';

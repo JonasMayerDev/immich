@@ -9,7 +9,7 @@ import { IAssetRepository, WithProperty, WithoutProperty } from '../asset';
 import { ICryptoRepository } from '../crypto';
 import { usePagination } from '../domain.util';
 import { IBaseJob, IEntityJob, IJobRepository, JOBS_ASSET_PAGINATION_SIZE, JobName, QueueName } from '../job';
-import { IMoveRepository } from '../move';
+import { IMoveRepository } from '../move/move.repository';
 import { IPersonRepository } from '../person';
 import { IStorageRepository, StorageCore, StorageFolder } from '../storage';
 import { FeatureFlag, ISystemConfigRepository, SystemConfigCore } from '../system-config';

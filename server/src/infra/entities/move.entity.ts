@@ -1,4 +1,3 @@
-import { PathType } from '@app/domain';
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('move_history')
@@ -20,4 +19,13 @@ export class MoveEntity {
 
   @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt!: Date | null;
+}
+
+export enum PathType {
+  ORIGINAL = 'original',
+  JPEG_THUMBNAIL = 'jpeg_thumbnail',
+  WEBP_THUMBNAIL = 'webp_thumbnail',
+  ENCODED_VIDEO = 'encoded_video',
+  SIDECAR = 'sidecar',
+  FACE = 'face',
 }

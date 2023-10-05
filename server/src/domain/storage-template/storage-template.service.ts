@@ -1,4 +1,5 @@
 import { AssetEntity, AssetType, SystemConfig } from '@app/infra/entities';
+import { PathType } from '@app/infra/entities/move.entity';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import handlebar from 'handlebars';
 import * as luxon from 'luxon';
@@ -7,7 +8,7 @@ import sanitize from 'sanitize-filename';
 import { IAssetRepository } from '../asset/asset.repository';
 import { getLivePhotoMotionFilename, usePagination } from '../domain.util';
 import { IEntityJob, JOBS_ASSET_PAGINATION_SIZE } from '../job';
-import { IMoveRepository, PathType } from '../move';
+import { IMoveRepository } from '../move/move.repository';
 import { IPersonRepository } from '../person';
 import { IStorageRepository, StorageCore, StorageFolder } from '../storage';
 import {

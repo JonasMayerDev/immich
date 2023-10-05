@@ -1,8 +1,8 @@
-import { IMoveRepository, PathType } from '@app/domain/move';
+import { IMoveRepository } from '@app/domain/move';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { MoveEntity } from '../entities/move.entity';
+import { MoveEntity, PathType } from '../entities/move.entity';
 
 @Injectable()
 export class MoveRepository implements IMoveRepository {

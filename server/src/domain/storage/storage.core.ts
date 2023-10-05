@@ -1,7 +1,8 @@
+import { PathType } from '@app/infra/entities/move.entity';
 import { join } from 'node:path';
 import { IAssetRepository } from '../asset';
 import { APP_MEDIA_LOCATION } from '../domain.constant';
-import { IMoveRepository, PathType } from '../move';
+import { IMoveRepository } from '../move/move.repository';
 import { IPersonRepository } from '../person';
 import { IStorageRepository } from './storage.repository';
 
