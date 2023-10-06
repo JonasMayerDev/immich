@@ -52,8 +52,24 @@ export class StorageCore {
   }
 
   async moveFile(id: string, pathType: PathType, originalPath: string, newPath: string) {
-    const move = await this.moveRepository.create(id, pathType, originalPath, newPath);
+    const brokenMove = await this.moveRepository.get(id, pathType);
+    if (brokenMove) {
+      /*
+        if a move was found, it is broken and can be in either of the following states:
+         - newPath not set: file wasn't even moved successfully => original path is still correct
+         - newPath set: file was moved successfully but saving the changes to the repo failed
+      */
+
+      if (brokenMove.newPath) {
+        originalPath = brokenMove.newPath;
+      }
+
+      await this.moveRepository.delete(brokenMove);
+    }
+
+    const move = await this.moveRepository.create(id, pathType, originalPath);
     await this.repository.moveFile(originalPath, newPath);
+    await this.moveRepository.update(move.id, newPath);
 
     switch (pathType) {
       case PathType.ORIGINAL:

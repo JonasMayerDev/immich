@@ -8,12 +8,20 @@ import { MoveEntity, PathType } from '../entities/move.entity';
 export class MoveRepository implements IMoveRepository {
   constructor(@InjectRepository(MoveEntity) private repository: Repository<MoveEntity>) {}
 
-  create(entityId: string, pathType: PathType, oldPath: string, newPath: string): Promise<MoveEntity> {
-    return this.repository.save({ entityId, pathType, oldPath, newPath });
+  create(entityId: string, pathType: PathType, oldPath: string): Promise<MoveEntity> {
+    return this.repository.save({ entityId, pathType, oldPath });
   }
 
   getDeletedMoves(): Promise<MoveEntity[]> {
     return this.repository.find({ withDeleted: true, where: { deletedAt: Not(IsNull()) } });
+  }
+
+  get(entityId: string, pathType: PathType): Promise<MoveEntity | null> {
+    return this.repository.findOne({ where: { entityId, pathType } });
+  }
+
+  update(id: string, newPath: string): Promise<MoveEntity> {
+    return this.repository.save({ id, newPath });
   }
 
   softDelete(move: MoveEntity): Promise<MoveEntity> {

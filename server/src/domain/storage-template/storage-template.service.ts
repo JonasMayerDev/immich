@@ -127,7 +127,7 @@ export class StorageTemplateService {
             error?.stack,
           );
 
-          // TODO: Is this needed? And if yes, is it fine to call storageCore.moveAssetFile again?
+          // TODO: Is this needed? And if yes, is it fine to call storageCore.moveFile again?
 
           // Either sidecar move failed or the save failed. Either way, move media back
           await this.storageRepository.moveFile(destination, source);
