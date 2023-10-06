@@ -77,6 +77,7 @@ export enum JobName {
   // cleanup
   DELETE_FILES = 'delete-files',
   CLEAN_OLD_AUDIT_LOGS = 'clean-old-audit-logs',
+  MOVE_HISTORY_CLEANUP = 'move-history-cleanup',
 
   // search
   SEARCH_INDEX_ASSETS = 'search-index-assets',
@@ -111,6 +112,7 @@ export const JOBS_TO_QUEUE: Record<JobName, QueueName> = {
   [JobName.CLEAN_OLD_AUDIT_LOGS]: QueueName.BACKGROUND_TASK,
   [JobName.PERSON_CLEANUP]: QueueName.BACKGROUND_TASK,
   [JobName.PERSON_DELETE]: QueueName.BACKGROUND_TASK,
+  [JobName.MOVE_HISTORY_CLEANUP]: QueueName.BACKGROUND_TASK,
 
   // conversion
   [JobName.QUEUE_VIDEO_CONVERSION]: QueueName.VIDEO_CONVERSION,

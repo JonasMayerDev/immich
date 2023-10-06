@@ -7,6 +7,7 @@ import {
   LibraryService,
   MediaService,
   MetadataService,
+  MoveService,
   PersonService,
   SearchService,
   SmartInfoService,
@@ -27,6 +28,7 @@ export class AppService {
     private assetService: AssetService,
     private mediaService: MediaService,
     private metadataService: MetadataService,
+    private moveService: MoveService,
     private personService: PersonService,
     private searchService: SearchService,
     private smartInfoService: SmartInfoService,
@@ -89,6 +91,7 @@ export class AppService {
       [JobName.LIBRARY_REMOVE_OFFLINE]: (data) => this.libraryService.handleOfflineRemoval(data),
       [JobName.LIBRARY_QUEUE_SCAN_ALL]: (data) => this.libraryService.handleQueueAllScan(data),
       [JobName.LIBRARY_QUEUE_CLEANUP]: () => this.libraryService.handleQueueCleanup(),
+      [JobName.MOVE_HISTORY_CLEANUP]: () => this.moveService.handleCleanup(),
     });
 
     process.on('uncaughtException', (error: Error | any) => {

@@ -75,7 +75,7 @@ export class StorageCore {
         await this.personRepository.update({ id, thumbnailPath: newPath });
     }
 
-    await this.moveRepository.softDelete(move.id);
+    await this.moveRepository.softDelete(move);
   }
 
   removeEmptyDirs(folder: StorageFolder) {

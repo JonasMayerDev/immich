@@ -78,6 +78,9 @@ export type JobItem =
   // Filesystem
   | { name: JobName.DELETE_FILES; data: IDeleteFilesJob }
 
+  // Move History
+  | { name: JobName.MOVE_HISTORY_CLEANUP; data?: IBaseJob }
+
   // Audit log cleanup
   | { name: JobName.CLEAN_OLD_AUDIT_LOGS; data?: IBaseJob }
 
