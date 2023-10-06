@@ -1,6 +1,8 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('move_history')
+@Unique('UQ_entityId_pathType_deletedAt', ['entityId', 'pathType', 'deletedAt'])
+@Unique('UQ_newPath_deletedAt', ['newPath', 'deletedAt'])
 export class MoveEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -14,8 +16,11 @@ export class MoveEntity {
   @Column({ type: 'varchar' })
   oldPath!: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  newPath!: string | null;
+  @Column({ type: 'varchar' })
+  newPath!: string;
+
+  @Column({ type: 'boolean', default: false })
+  isMoved!: boolean;
 
   @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt!: Date | null;

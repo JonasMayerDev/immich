@@ -1,5 +1,12 @@
-import { AssetEntity, AssetType, Colorspace, TranscodeHWAccel, TranscodePolicy, VideoCodec } from '@app/infra/entities';
-import { PathType } from '@app/infra/entities/move.entity';
+import {
+  AssetEntity,
+  AssetType,
+  Colorspace,
+  PathType,
+  TranscodeHWAccel,
+  TranscodePolicy,
+  VideoCodec,
+} from '@app/infra/entities';
 import { Inject, Injectable, Logger, UnsupportedMediaTypeException } from '@nestjs/common';
 import { IAssetRepository, WithoutProperty } from '../asset';
 import { usePagination } from '../domain.util';

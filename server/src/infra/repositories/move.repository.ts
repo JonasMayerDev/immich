@@ -1,15 +1,15 @@
 import { IMoveRepository } from '@app/domain/move';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository } from 'typeorm';
+import { IsNull, LessThan, Not, Repository } from 'typeorm';
 import { MoveEntity, PathType } from '../entities/move.entity';
 
 @Injectable()
 export class MoveRepository implements IMoveRepository {
   constructor(@InjectRepository(MoveEntity) private repository: Repository<MoveEntity>) {}
 
-  create(entityId: string, pathType: PathType, oldPath: string): Promise<MoveEntity> {
-    return this.repository.save({ entityId, pathType, oldPath });
+  create(entityId: string, pathType: PathType, oldPath: string, newPath: string): Promise<MoveEntity> {
+    return this.repository.save({ entityId, pathType, oldPath, newPath });
   }
 
   getDeletedMoves(): Promise<MoveEntity[]> {
@@ -20,8 +20,8 @@ export class MoveRepository implements IMoveRepository {
     return this.repository.findOne({ where: { entityId, pathType } });
   }
 
-  update(id: string, newPath: string): Promise<MoveEntity> {
-    return this.repository.save({ id, newPath });
+  update(id: string, isMoved: boolean): Promise<MoveEntity> {
+    return this.repository.save({ id, isMoved });
   }
 
   softDelete(move: MoveEntity): Promise<MoveEntity> {
@@ -30,5 +30,9 @@ export class MoveRepository implements IMoveRepository {
 
   delete(move: MoveEntity): Promise<MoveEntity> {
     return this.repository.remove(move);
+  }
+
+  async prune(deletedBefore: Date): Promise<void> {
+    await this.repository.delete({ deletedAt: LessThan(deletedBefore) });
   }
 }

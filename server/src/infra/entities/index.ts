@@ -22,6 +22,7 @@ export * from './asset.entity';
 export * from './audit.entity';
 export * from './exif.entity';
 export * from './library.entity';
+export * from './move.entity';
 export * from './partner.entity';
 export * from './person.entity';
 export * from './shared-link.entity';
