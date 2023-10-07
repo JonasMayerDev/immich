@@ -31,15 +31,15 @@ export class UserService {
   private userCore: UserCore;
 
   constructor(
-    @Inject(IUserRepository) private userRepository: IUserRepository,
+    @Inject(IAlbumRepository) private albumRepository: IAlbumRepository,
+    @Inject(IAssetRepository) private assetRepository: IAssetRepository,
     @Inject(ICryptoRepository) cryptoRepository: ICryptoRepository,
+    @Inject(IJobRepository) private jobRepository: IJobRepository,
     @Inject(ILibraryRepository) libraryRepository: ILibraryRepository,
     @Inject(IMoveRepository) moveRepository: IMoveRepository,
     @Inject(IPersonRepository) personRepository: IPersonRepository,
-    @Inject(IAlbumRepository) private albumRepository: IAlbumRepository,
-    @Inject(IAssetRepository) private assetRepository: IAssetRepository,
-    @Inject(IJobRepository) private jobRepository: IJobRepository,
     @Inject(IStorageRepository) private storageRepository: IStorageRepository,
+    @Inject(IUserRepository) private userRepository: IUserRepository,
   ) {
     this.storageCore = new StorageCore(storageRepository, assetRepository, moveRepository, personRepository);
     this.userCore = new UserCore(userRepository, libraryRepository, cryptoRepository);

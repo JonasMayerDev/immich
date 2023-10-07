@@ -6,12 +6,15 @@ import {
   newCryptoRepositoryMock,
   newJobRepositoryMock,
   newMetadataRepositoryMock,
+  newMoveRepositoryMock,
+  newPersonRepositoryMock,
   newStorageRepositoryMock,
   newSystemConfigRepositoryMock,
 } from '@test';
 import { randomBytes } from 'crypto';
 import { Stats } from 'fs';
 import { constants } from 'fs/promises';
+import { IMoveRepository, IPersonRepository } from '..';
 import { IAlbumRepository } from '../album';
 import { IAssetRepository, WithProperty, WithoutProperty } from '../asset';
 import { ICryptoRepository } from '../crypto';
@@ -28,6 +31,8 @@ describe(MetadataService.name, () => {
   let cryptoRepository: jest.Mocked<ICryptoRepository>;
   let jobMock: jest.Mocked<IJobRepository>;
   let metadataMock: jest.Mocked<IMetadataRepository>;
+  let moveMock: jest.Mocked<IMoveRepository>;
+  let personMock: jest.Mocked<IPersonRepository>;
   let storageMock: jest.Mocked<IStorageRepository>;
   let sut: MetadataService;
 
@@ -38,9 +43,21 @@ describe(MetadataService.name, () => {
     cryptoRepository = newCryptoRepositoryMock();
     jobMock = newJobRepositoryMock();
     metadataMock = newMetadataRepositoryMock();
+    moveMock = newMoveRepositoryMock();
+    personMock = newPersonRepositoryMock();
     storageMock = newStorageRepositoryMock();
 
-    sut = new MetadataService(albumMock, assetMock, cryptoRepository, jobMock, metadataMock, storageMock, configMock);
+    sut = new MetadataService(
+      albumMock,
+      assetMock,
+      cryptoRepository,
+      jobMock,
+      metadataMock,
+      storageMock,
+      configMock,
+      moveMock,
+      personMock,
+    );
   });
 
   it('should be defined', () => {
