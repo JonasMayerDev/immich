@@ -68,7 +68,7 @@ export class StorageCore {
     }
 
     const move = await this.moveRepository.create(id, pathType, originalPath, newPath);
-    await this.repository.moveFile(originalPath, newPath);
+    !brokenMove?.isMoved && (await this.repository.moveFile(originalPath, newPath));
     await this.moveRepository.update(move.id, true);
 
     switch (pathType) {
