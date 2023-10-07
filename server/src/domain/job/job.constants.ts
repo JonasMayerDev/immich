@@ -54,7 +54,6 @@ export enum JobName {
   QUEUE_MIGRATION = 'queue-migration',
   MIGRATE_ASSET = 'migrate-asset',
   MIGRATE_PERSON = 'migrate-person',
-  RETRY_FAILED_MOVES = 'retry-failed-moves',
 
   // object tagging
   QUEUE_OBJECT_TAGGING = 'queue-object-tagging',
@@ -114,7 +113,6 @@ export const JOBS_TO_QUEUE: Record<JobName, QueueName> = {
   [JobName.PERSON_CLEANUP]: QueueName.BACKGROUND_TASK,
   [JobName.PERSON_DELETE]: QueueName.BACKGROUND_TASK,
   [JobName.MOVE_HISTORY_CLEANUP]: QueueName.BACKGROUND_TASK,
-  [JobName.RETRY_FAILED_MOVES]: QueueName.BACKGROUND_TASK,
 
   // conversion
   [JobName.QUEUE_VIDEO_CONVERSION]: QueueName.VIDEO_CONVERSION,

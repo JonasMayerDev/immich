@@ -151,10 +151,6 @@ export class JobService {
     await this.jobRepository.queue({ name: JobName.MOVE_HISTORY_CLEANUP });
   }
 
-  async handleHourlyJobs() {
-    await this.jobRepository.queue({ name: JobName.RETRY_FAILED_MOVES });
-  }
-
   /**
    * Queue follow up jobs
    */
