@@ -107,37 +107,17 @@ export class StorageTemplateService {
     if (asset.originalPath !== destination) {
       const source = asset.originalPath;
 
-      let sidecarMoved = false;
       try {
         await this.storageCore.moveFile(asset.id, PathType.ORIGINAL, asset.originalPath, destination);
 
         let sidecarDestination;
-        try {
-          if (asset.sidecarPath) {
-            sidecarDestination = `${destination}.xmp`;
-            await this.storageCore.moveFile(asset.id, PathType.SIDECAR, asset.sidecarPath, sidecarDestination);
-            sidecarMoved = true;
-          }
-
-          asset.originalPath = destination;
-          asset.sidecarPath = sidecarDestination || null;
-        } catch (error: any) {
-          this.logger.warn(
-            `Unable to save new originalPath to database, undoing move for path ${asset.originalPath} - filename ${asset.originalFileName} - id ${asset.id}`,
-            error?.stack,
-          );
-
-          // TODO: Is this needed? And if yes, is it fine to call storageCore.moveFile again?
-
-          // Either sidecar move failed or the save failed. Either way, move media back
-          await this.storageRepository.moveFile(destination, source);
-
-          if (asset.sidecarPath && sidecarDestination && sidecarMoved) {
-            // If the sidecar was moved, that means the saved failed. So move both the sidecar and the
-            // media back into their original positions
-            await this.storageRepository.moveFile(sidecarDestination, asset.sidecarPath);
-          }
+        if (asset.sidecarPath) {
+          sidecarDestination = `${destination}.xmp`;
+          await this.storageCore.moveFile(asset.id, PathType.SIDECAR, asset.sidecarPath, sidecarDestination);
         }
+
+        asset.originalPath = destination;
+        asset.sidecarPath = sidecarDestination || null;
       } catch (error: any) {
         this.logger.error(`Problem applying storage template`, error?.stack, { id: asset.id, source, destination });
       }
