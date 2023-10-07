@@ -18,6 +18,11 @@ export class AppService {
     await this.jobService.handleNightlyJobs();
   }
 
+  @Cron(CronExpression.EVERY_HOUR)
+  async onHourlyJobs() {
+    await this.jobService.handleHourlyJobs();
+  }
+
   async init() {
     this.storageService.init();
     await this.searchService.init();

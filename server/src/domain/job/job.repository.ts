@@ -80,6 +80,7 @@ export type JobItem =
 
   // Move History
   | { name: JobName.MOVE_HISTORY_CLEANUP; data?: IBaseJob }
+  | { name: JobName.RETRY_FAILED_MOVES; data?: IBaseJob }
 
   // Audit log cleanup
   | { name: JobName.CLEAN_OLD_AUDIT_LOGS; data?: IBaseJob }

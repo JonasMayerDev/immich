@@ -12,12 +12,16 @@ export class MoveRepository implements IMoveRepository {
     return this.repository.save({ entityId, pathType, oldPath, newPath });
   }
 
+  get(entityId: string, pathType: PathType): Promise<MoveEntity | null> {
+    return this.repository.findOne({ where: { entityId, pathType } });
+  }
+
   getDeletedMoves(): Promise<MoveEntity[]> {
     return this.repository.find({ withDeleted: true, where: { deletedAt: Not(IsNull()) } });
   }
 
-  get(entityId: string, pathType: PathType): Promise<MoveEntity | null> {
-    return this.repository.findOne({ where: { entityId, pathType } });
+  getFailedMoves(): Promise<MoveEntity[]> {
+    return this.repository.find();
   }
 
   update(id: string, isMoved: boolean): Promise<MoveEntity> {
