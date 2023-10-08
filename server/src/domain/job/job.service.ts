@@ -1,6 +1,7 @@
 import { AssetType } from '@app/infra/entities';
 import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
 import { CronJob, CronTime } from 'cron';
+import cron from 'cron-validator';
 import { IAssetRepository, mapAsset } from '../asset';
 import { CommunicationEvent, ICommunicationRepository } from '../communication';
 import { IPersonRepository } from '../person';
@@ -23,13 +24,14 @@ export class JobService {
     @Inject(IPersonRepository) private personRepository: IPersonRepository,
   ) {
     this.configCore = new SystemConfigCore(configRepository);
+    this.configCore.addValidator((config) => this.validateCronExpression(config.libraryScan.cronExpression));
     this.initPeriodicLibraryScan();
   }
 
   async initPeriodicLibraryScan() {
     const config = await this.configCore.getConfig();
     const libraryScanJob = new CronJob(
-      config.libraryScan.cronExpression,
+      this.configCore.getDefaults().libraryScan.cronExpression,
       () => {
         this.jobRepository.queue({ name: JobName.LIBRARY_QUEUE_SCAN_ALL, data: { force: false } });
       },
@@ -238,6 +240,12 @@ export class JobService {
       case JobName.LINK_LIVE_PHOTOS:
         await this.jobRepository.queue({ name: JobName.SEARCH_INDEX_ASSET, data: { ids: [item.data.id] } });
         break;
+    }
+  }
+
+  private validateCronExpression(cronExpression: string) {
+    if (!cron.isValidCron(cronExpression)) {
+      throw new Error(`Invalid cron expression ${cronExpression}`);
     }
   }
 }

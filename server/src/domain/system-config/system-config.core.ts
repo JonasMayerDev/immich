@@ -208,6 +208,7 @@ export class SystemConfigCore {
   }
 
   public addValidator(validator: SystemConfigValidator) {
+    console.log('Validator got added', this);
     this.validators.push(validator);
   }
 
@@ -223,6 +224,7 @@ export class SystemConfigCore {
 
     try {
       for (const validator of this.validators) {
+        console.log(validator);
         await validator(config);
       }
     } catch (e) {
