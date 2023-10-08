@@ -1,4 +1,4 @@
-import { SystemConfigThumbnailDto, SystemConfigTrashDto } from '@app/domain/system-config';
+import { SystemConfigLibraryScanDto, SystemConfigThumbnailDto, SystemConfigTrashDto } from '@app/domain/system-config';
 import { SystemConfig } from '@app/infra/entities';
 import { Type } from 'class-transformer';
 import { IsObject, ValidateNested } from 'class-validator';
@@ -61,6 +61,10 @@ export class SystemConfigDto implements SystemConfig {
   @ValidateNested()
   @IsObject()
   trash!: SystemConfigTrashDto;
+
+  @Type(() => SystemConfigLibraryScanDto)
+  @IsObject()
+  libraryScan!: SystemConfigLibraryScanDto;
 }
 
 export function mapConfig(config: SystemConfig): SystemConfigDto {

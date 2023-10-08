@@ -20,6 +20,8 @@
   import Download from 'svelte-material-icons/Download.svelte';
   import type { PageData } from './$types';
   import TrashSettings from '$lib/components/admin-page/settings/trash-settings/trash-settings.svelte';
+  import { subtract } from 'lodash-es';
+  import LibraryScanSettings from '$lib/components/admin-page/settings/library-scan/library-scan-settings.svelte';
 
   export let data: PageData;
 
@@ -109,6 +111,13 @@
       subtitle="Manage the resolution and encoding information of the video files"
     >
       <FFmpegSettings disabled={$featureFlags.configFile} ffmpegConfig={configs.ffmpeg} />
+    </SettingAccordion>
+
+    <SettingAccordion
+      title="Automatic library scanning"
+      subtitle="Manage the settings for the automatic library scanning job"
+    >
+      <LibraryScanSettings disabled={$featureFlags.configFile} libraryScanConfig={configs.libraryScan} />
     </SettingAccordion>
   {/await}
 </section>
