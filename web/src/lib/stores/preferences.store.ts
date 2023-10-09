@@ -43,6 +43,7 @@ export const isShowDetail = persisted<boolean>('info-opened', false, {});
 
 export interface AlbumViewSettings {
   sortBy: string;
+  sortDesc: boolean;
   view: string;
 }
 

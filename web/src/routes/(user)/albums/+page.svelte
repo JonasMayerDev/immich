@@ -53,7 +53,6 @@
     albumTitle: {
       table: 'Album title',
       sortTitle: 'Album title',
-      sortDesc: true,
       widthClass: 'w-8/12 text-left sm:w-4/12 md:w-4/12 md:w-4/12 2xl:w-6/12',
       sortFn: (reverse, albums) => {
         return orderBy(albums, 'albumName', [reverse ? 'desc' : 'asc']);
@@ -62,7 +61,6 @@
     numberOfAssets: {
       table: 'Assets',
       sortTitle: 'Number of assets',
-      sortDesc: true,
       widthClass: 'w-4/12 text-center sm:w-2/12 2xl:w-1/12',
       sortFn: (reverse, albums) => {
         return orderBy(albums, 'assetCount', [reverse ? 'desc' : 'asc']);
@@ -71,7 +69,6 @@
     lastModified: {
       table: 'Updated date',
       sortTitle: 'Last modified',
-      sortDesc: true,
       widthClass: 'text-center hidden sm:block w-3/12 lg:w-2/12',
       sortFn: (reverse, albums) => {
         return orderBy(albums, [(album) => new Date(album.updatedAt)], [reverse ? 'desc' : 'asc']);
@@ -80,7 +77,6 @@
     mostRecent: {
       table: 'Created date',
       sortTitle: 'Most recent photo',
-      sortDesc: true,
       widthClass: 'text-center hidden sm:block w-3/12 lg:w-2/12',
       sortFn: (reverse, albums) => {
         return orderBy(
@@ -141,10 +137,10 @@
   };
 
   $: {
-    const { sortBy } = $albumViewSettings;
+    const { sortBy, sortDesc } = $albumViewSettings;
     for (const key in sortByOptions) {
       if (sortByOptions[key].sortTitle === sortBy) {
-        $albums = sortByOptions[key].sortFn(sortByOptions[key].sortDesc, $unsortedAlbums);
+        $albums = sortByOptions[key].sortFn(sortDesc, $unsortedAlbums);
         break;
       }
     }
@@ -217,11 +213,11 @@
     <Dropdown
       options={Object.values(sortByOptions).map((CourseInfo) => CourseInfo.sortTitle)}
       bind:value={$albumViewSettings.sortBy}
-      icons={Object.keys(sortByOptions).map((key) => (sortByOptions[key].sortDesc ? ArrowDownThin : ArrowUpThin))}
+      icons={Object.keys(sortByOptions).map((key) => (sortDesc ? ArrowDownThin : ArrowUpThin))}
       on:select={(event) => {
         for (const key in sortByOptions) {
           if (sortByOptions[key].sortTitle === event.detail) {
-            sortByOptions[key].sortDesc = !sortByOptions[key].sortDesc;
+            $albumViewSettings.sortDesc = !$albumViewSettings.sortDesc;
           }
         }
       }}
